@@ -81,7 +81,7 @@ function LevelMaker.generate(width, height)
                 tiles[7][x].topper = nil
             
             -- chance to generate bushes
-            elseif math.random(8) == 1 then
+            elseif math.random(5) == 1 then
                 table.insert(objects,
                     GameObject {
                         texture = 'bushes',
