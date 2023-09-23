@@ -73,6 +73,7 @@ gTextures = {
     ['gems'] = love.graphics.newImage('graphics/gems.png'),
     ['backgrounds'] = love.graphics.newImage('graphics/backgrounds.png'),
     ['green-alien'] = love.graphics.newImage('graphics/green_alien.png'),
+    ['blue-alien'] = love.graphics.newImage('graphics/blue_alien.png'),
     ['creatures'] = love.graphics.newImage('graphics/creatures.png')
 }
 
@@ -86,6 +87,7 @@ gFrames = {
     ['gems'] = GenerateQuads(gTextures['gems'], 16, 16),
     ['backgrounds'] = GenerateQuads(gTextures['backgrounds'], 256, 128),
     ['green-alien'] = GenerateQuads(gTextures['green-alien'], 16, 20),
+    ['blue-alien'] = GenerateQuads(gTextures['blue-alien'], 16, 20),
     ['creatures'] = GenerateQuads(gTextures['creatures'], 16, 16)
 }
 
