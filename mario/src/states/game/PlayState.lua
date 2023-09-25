@@ -18,8 +18,11 @@ function PlayState:init()
     self.gravityOn = true
     self.gravityAmount = 6
 
+    -- spawn the alien on tile where there is solid ground
+    local spawnTile = spawnOnSolid(100, 10, self.tileMap)
+
     self.player = Player({
-        x = 0, y = 0,
+        x = (spawnTile - 1) * 16, y = 0,
         width = 16, height = 20,
         texture = 'green-alien',
         stateMachine = StateMachine {
@@ -31,9 +34,7 @@ function PlayState:init()
         map = self.tileMap,
         level = self.level
     })
-
     self:spawnEnemies()
-
     self.player:changeState('falling')
 end
 
@@ -136,6 +137,12 @@ function PlayState:spawnEnemies()
     end
 end
 
--- function spawnOnSolid()
-    
--- end
+-- Check for solid ground and set spawn point for player
+function spawnOnSolid(width, height, tilemap)
+    for x = 1, width do
+        if tilemap.tiles[height][x].id == 3 then
+            return x
+        end
+    end
+    return 1
+end
