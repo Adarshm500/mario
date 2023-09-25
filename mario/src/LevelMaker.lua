@@ -22,6 +22,10 @@ function LevelMaker.generate(width, height)
     local tileset = math.random(20)
     local topperset = math.random(20)
 
+    -- whether the lock and the key has been spawn
+    local keySpawn = true
+    local lockSpawn = true
+
     -- insert blank tables into tiles for later access
     for x = 1, height do
         table.insert(tiles, {})
@@ -38,7 +42,7 @@ function LevelMaker.generate(width, height)
         end
 
         -- chance to just be emptiness
-        if math.random(2) == 1 then
+        if math.random(7) == 1 then
             for y = 7, height do
                 table.insert(tiles[y],
                     Tile(x, y, tileID, nil, tileset, topperset))
