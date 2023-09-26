@@ -162,6 +162,31 @@ function LevelMaker.generate(width, height)
                     }
                 )
             end
+
+            --Chance to spawn a key and a lock
+            if (math.random(10) == 1) and (keySpawn == true) then
+                table.insert(objects,
+
+                    -- Key
+                    GameObject{
+                        texture = 'keys_and_locks',
+                        x = (x - 1) * TILE_SIZE,
+                        y = (blockHeight - 1) * TILE_SIZE,
+                        width = 16,
+                        height = 16, 
+                        frame = math.random(4),
+                        collidable = true,
+                        consumable = true,
+                        solid = false,
+
+                        onConsume = function(player, object)
+                            gSounds['pickup']:play()
+                            player.score = player.score + 100
+                        end     
+                    }
+                )
+                keySpawn = false
+            end
         end
     end
 
