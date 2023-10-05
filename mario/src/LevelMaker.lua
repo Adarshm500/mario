@@ -24,7 +24,12 @@ function LevelMaker.generate(width, height)
 
     -- whether the lock and the key has been spawn
     local keySpawn = true
+    local keyFound = false
     local lockSpawn = true
+
+    -- whether block is spawn in the column
+    local blockSpawn = false
+    local keyFrame = 0
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -101,6 +106,7 @@ function LevelMaker.generate(width, height)
 
             -- chance to spawn a block
             if math.random(10) == 1 then
+                blockSpawn = true
                 table.insert(objects,
 
                     -- jump block
@@ -130,7 +136,7 @@ function LevelMaker.generate(width, height)
                                     local gem = GameObject {
                                         texture = 'gems',
                                         x = (x - 1) * TILE_SIZE,
-                                        y = (blockHeight - 1) * TILE_SIZE - 4,
+                                        y = o(blockHeight - 1) * TILE_SIZE - 4,
                                         width = 16,
                                         height = 16,
                                         frame = math.random(#GEMS),
@@ -162,32 +168,69 @@ function LevelMaker.generate(width, height)
                     }
                 )
             end
-
+            
             --Chance to spawn a key and a lock
-            if (math.random(10) == 1) and (keySpawn == true) then
+            -- variable to store keyframe so that lock could be of same type
+            if (math.random(4) == 1) and (keySpawn == true) and blockSpawn == false then
+                keyFrame = math.random(4)
                 table.insert(objects,
 
                     -- Key
                     GameObject{
                         texture = 'keys_and_locks',
-                        x = (x - 1) * TILE_SIZE,
+                        --put key closer to the beginning in the world
+                        x = math.max(((x + 20) * TILE_SIZE),(4 * TILE_SIZE)),
                         y = (blockHeight - 1) * TILE_SIZE,
                         width = 16,
                         height = 16, 
-                        frame = math.random(4),
+                        frame = keyFrame,
                         collidable = true,
                         consumable = true,
                         solid = false,
 
-                        onConsume = function(player, object)
+                        onConsume = function()
                             gSounds['pickup']:play()
-                            player.score = player.score + 100
+                            keyFound = true
                         end     
                     }
                 )
                 keySpawn = false
             end
+
+            if (math.random(4) == 1) and (lockSpawn == true) and keySpawn == false then
+                table.insert(objects,
+                    -- lock
+                    GameObject{
+                        texture = 'keys_and_locks',
+                        --put lock far later in the world
+                        x = math.max(((x + 40) * TILE_SIZE),(10 * TILE_SIZE)),
+                        y = (blockHeight - 1) * TILE_SIZE,
+                        width = 16,
+                        height = 16, 
+                        frame = keyFrame + 4,
+                        collidable = true,
+                        hit = false,
+                        solid = true,
+                        
+                        -- collision function takes itself
+                        onCollide = function(obj)
+                            -- disappear if we have the key
+                            if keyFound then
+                                obj.consumable = true            
+                                obj.solid = false         
+                                obj.onConsume = function(player, object)
+                                    gSounds['pickup']:play()
+                                    player.score = player.score + 500
+                                end
+                                print(obj.consumable)
+                            end
+                        end
+                    }
+                )
+                lockSpawn = false
+            end
         end
+        blockSpawn = false
     end
 
     local map = TileMap(width, height)

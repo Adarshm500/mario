@@ -16,7 +16,7 @@ function PlayState:init()
     self.backgroundX = 0
 
     self.gravityOn = true
-    self.gravityAmount = 6
+    self.gravityAmount = 8
 
     -- spawn the alien on tile where there is solid ground
     local spawnTile = spawnOnSolid(100, 10, self.tileMap)
