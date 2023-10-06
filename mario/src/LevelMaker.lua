@@ -11,6 +11,8 @@
 LevelMaker = Class{}
 
 function LevelMaker.generate(width, height)
+    math.randomseed(os.time()) -- Use the current time as a seed
+    
     local tiles = {}
     local entities = {}
     local objects = {}
@@ -30,6 +32,10 @@ function LevelMaker.generate(width, height)
     -- whether block is spawn in the column
     local blockSpawn = false
     local keyFrame = 0
+
+    -- x location of lock and key
+    local keyX = 2 * 16
+    local lockX = 7 * 16
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -171,15 +177,17 @@ function LevelMaker.generate(width, height)
             
             --Chance to spawn a key and a lock
             -- variable to store keyframe so that lock could be of same type
-            if (math.random(4) == 1) and (keySpawn == true) and blockSpawn == false then
+            if (keySpawn == true) and blockSpawn == false then
                 keyFrame = math.random(4)
+                keyX = math.random(10, 35) * TILE_SIZE
+                print(keyX)
                 table.insert(objects,
 
                     -- Key
                     GameObject{
                         texture = 'keys_and_locks',
                         --put key closer to the beginning in the world
-                        x = math.max(((x + 20) * TILE_SIZE),(4 * TILE_SIZE)),
+                        x = keyX,
                         y = (blockHeight - 1) * TILE_SIZE,
                         width = 16,
                         height = 16, 
@@ -197,13 +205,15 @@ function LevelMaker.generate(width, height)
                 keySpawn = false
             end
 
-            if (math.random(4) == 1) and (lockSpawn == true) and keySpawn == false then
+            if (lockSpawn == true) and keySpawn == false then
+                lockX= math.random(55, 90) * TILE_SIZE
+                print(lockX)
                 table.insert(objects,
                     -- lock
                     GameObject{
                         texture = 'keys_and_locks',
                         --put lock far later in the world
-                        x = math.max(((x + 40) * TILE_SIZE),(10 * TILE_SIZE)),
+                        x = lockX,
                         y = (blockHeight - 1) * TILE_SIZE,
                         width = 16,
                         height = 16, 
