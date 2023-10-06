@@ -136,7 +136,7 @@ function LevelMaker.generate(width, height)
                                     local gem = GameObject {
                                         texture = 'gems',
                                         x = (x - 1) * TILE_SIZE,
-                                        y = o(blockHeight - 1) * TILE_SIZE - 4,
+                                        y = (blockHeight - 1) * TILE_SIZE - 4,
                                         width = 16,
                                         height = 16,
                                         frame = math.random(#GEMS),
@@ -216,13 +216,12 @@ function LevelMaker.generate(width, height)
                         onCollide = function(obj)
                             -- disappear if we have the key
                             if keyFound then
-                                obj.consumable = true            
-                                obj.solid = false         
-                                obj.onConsume = function(player, object)
-                                    gSounds['pickup']:play()
-                                    player.score = player.score + 500
+                                for i = 1, #objects do
+                                    if objects[i] == obj then
+                                        table.remove(objects, i)
+                                        gSounds['unlocked']:play()
+                                    end
                                 end
-                                print(obj.consumable)
                             end
                         end
                     }
