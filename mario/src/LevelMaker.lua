@@ -34,8 +34,9 @@ function LevelMaker.generate(width, height)
     local keyFrame = 0
 
     -- x location of lock and key
-    local keyX = 2 * 16
+    local keyX = 16
     local lockX = 7 * 16
+    local poleX
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -179,7 +180,7 @@ function LevelMaker.generate(width, height)
             -- variable to store keyframe so that lock could be of same type
             if (keySpawn == true) and blockSpawn == false then
                 keyFrame = math.random(4)
-                keyX = math.random(10, 35) * TILE_SIZE
+                keyX = math.random((width/100) * 10, (width/100) * 35) * TILE_SIZE
                 print(keyX)
                 table.insert(objects,
 
@@ -206,7 +207,7 @@ function LevelMaker.generate(width, height)
             end
 
             if (lockSpawn == true) and keySpawn == false then
-                lockX= math.random(55, 90) * TILE_SIZE
+                lockX= math.random((width/100) * 60, (width/100) * 90) * TILE_SIZE
                 print(lockX)
                 table.insert(objects,
                     -- lock
@@ -230,6 +231,47 @@ function LevelMaker.generate(width, height)
                                     if objects[i] == obj then
                                         table.remove(objects, i)
                                         gSounds['unlocked']:play()
+                                        -- spawn the flag at the end of the level
+                                        -- make sure that the pole is spawn on the solid ground
+                                        poleX = (width - 2) * TILE_SIZE              
+                                        
+                                        table.insert(objects,
+                                            --pole
+                                            GameObject{
+                                                texture = 'pole',
+                                                -- put at the end in the world
+                                                x = poleX,
+                                                y = 3 * TILE_SIZE,
+                                                width = 16, 
+                                                height = 16 * 3,
+                                                frame = 4,
+                                                collidable = true,
+                                                hit = false,
+                                                solid = true,
+
+                                                onCollide = function()
+                                                end
+                                            }
+                                        )
+                                        -- insert the flag over the pole so as to look like one unit
+                                        table.insert(objects,
+                                            --flag
+                                            GameObject{
+                                                texture = 'flag',
+                                                -- put at the end in the world
+                                                x = poleX + TILE_SIZE / 2,
+                                                y = 3.2 * TILE_SIZE,
+                                                width = 16, 
+                                                height = 16,
+                                                frame = 16,
+                                                collidable = true,
+                                                hit = false,
+                                                solid = true,
+
+                                                onCollide = function()
+                                                end
+                                            }
+                                        )
                                     end
                                 end
                             end
