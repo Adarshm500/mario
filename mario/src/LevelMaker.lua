@@ -11,6 +11,8 @@
 LevelMaker = Class{}
 
 function LevelMaker.generate(width, height)
+    --print the width
+    print(width)
     math.randomseed(os.time()) -- Use the current time as a seed
     
     local tiles = {}
@@ -36,7 +38,12 @@ function LevelMaker.generate(width, height)
     -- x location of lock and key
     local keyX = 16
     local lockX = 7 * 16
+
+    -- x location of the pole
     local poleX
+
+    -- width of the current level
+    local currentWidth = width
 
     -- insert blank tables into tiles for later access
     for x = 1, height do
@@ -111,6 +118,7 @@ function LevelMaker.generate(width, height)
                 )
             end
 
+
             -- chance to spawn a block
             if math.random(10) == 1 then
                 blockSpawn = true
@@ -181,7 +189,6 @@ function LevelMaker.generate(width, height)
             if (keySpawn == true) and blockSpawn == false then
                 keyFrame = math.random(4)
                 keyX = math.random((width/100) * 10, (width/100) * 35) * TILE_SIZE
-                print(keyX)
                 table.insert(objects,
 
                     -- Key
@@ -208,7 +215,6 @@ function LevelMaker.generate(width, height)
 
             if (lockSpawn == true) and keySpawn == false then
                 lockX= math.random((width/100) * 60, (width/100) * 90) * TILE_SIZE
-                print(lockX)
                 table.insert(objects,
                     -- lock
                     GameObject{
@@ -234,7 +240,7 @@ function LevelMaker.generate(width, height)
                                         -- spawn the flag at the end of the level
                                         -- make sure that the pole is spawn on the solid ground
                                         poleX = (width - 2) * TILE_SIZE              
-                                        
+
                                         table.insert(objects,
                                             --pole
                                             GameObject{
@@ -246,10 +252,16 @@ function LevelMaker.generate(width, height)
                                                 height = 16 * 3,
                                                 frame = 4,
                                                 collidable = true,
-                                                hit = false,
-                                                solid = true,
+                                                consumable = true,
+                                                solid = false,
 
-                                                onCollide = function()
+                                                onConsume = function(player)
+                                                    gSounds['victory']:play()
+                                                    -- change to begin game state with new width (incremented)
+                                                    gStateMachine:change('play', {
+                                                        width = currentWidth + 30,
+                                                        score = player.score + 500
+                                                    })
                                                 end
                                             }
                                         )
@@ -265,10 +277,16 @@ function LevelMaker.generate(width, height)
                                                 height = 16,
                                                 frame = 16,
                                                 collidable = true,
-                                                hit = false,
-                                                solid = true,
-
-                                                onCollide = function()
+                                                consumable = true,
+                                                solid = false,
+                                                
+                                                onConsume = function(player)
+                                                    gSounds['victory']:play()
+                                                    -- change to begin game state with new width (incremented)
+                                                    gStateMachine:change('play', {
+                                                        width = currentWidth + 30,
+                                                        score = player.score + 500
+                                                    })
                                                 end
                                             }
                                         )

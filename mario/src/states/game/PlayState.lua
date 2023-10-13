@@ -10,13 +10,20 @@ PlayState = Class{__includes = BaseState}
 function PlayState:init()
     self.camX = 0
     self.camY = 0
-    self.level = LevelMaker.generate(40, 10)
-    self.tileMap = self.level.tileMap
     self.background = math.random(3)
     self.backgroundX = 0
 
     self.gravityOn = true
     self.gravityAmount = 8
+end
+
+-- playstate enter to increment the Level: 
+function PlayState:enter(params)
+    -- grab the width from the params we are passed
+    self.width = params.width 
+
+    self.level = LevelMaker.generate(self.width, 10)
+    self.tileMap = self.level.tileMap
 
     -- spawn the alien on tile where there is solid ground
     local spawnTile = spawnOnSolid(100, 10, self.tileMap)
@@ -34,6 +41,7 @@ function PlayState:init()
         map = self.tileMap,
         level = self.level
     })
+    self.player.score = params.score or 0
     self:spawnEnemies()
     self.player:changeState('falling')
 end
