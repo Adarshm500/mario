@@ -14,7 +14,7 @@ function PlayState:init()
     self.backgroundX = 0
 
     self.gravityOn = true
-    self.gravityAmount = 8
+    self.gravityAmount = 6
 end
 
 -- playstate enter to increment the Level: 
